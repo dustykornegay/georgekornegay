@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<center>
+<head >
+ <div id="headerImage" style="background-image: url(sleepingbear.png);
+ width: 800; height: 250; background-size: 100%;" ></div>
+
+ <div style="background-color:#DF0101;border:1px solid
+ black;padding:5px; width:788">
+
+<left> <bold> <a HREF="http://www.georgekornegay.com">HOME </a>&nbsp &nbsp
+   <a HREF= "goals.html">GOALS </a>&nbsp &nbsp
+   <a HREF= "pie.html">STATISTICS </a> &nbsp &nbsp
+   LOGIN: <input type="text" name="logN"> &nbsp &nbsp
+PASSWORD: <input type="text" name="PeiWord"><input type="button"
+   value="Sign In" onclick="signin()" /> </bold></left>
+</div>
+</head>
+<body style= "background-color:lightyellow;padding:5px;">
+</br>
+<form name="myform">
+  Section 1: <input type="text" name="sec1"><br>
+  Section 2: <input type="text" name="sec2"><br>
+  Section 3:  <input type="text" name="sec3"><br>
+<p> <input type="button" value="Graph" onclick="graph()" /> <p>
+<p> TotalScore: <i id="totalScore"> </i> </p>
+  <canvas id="myCanvas" width="250" height="150"
+   style="background-color:white;border:1px solid black;padding:5px;"
+   > </canvas>
+ <canvas id="myCanvas2" width="250" height="150" style=
+   "background-color:white;border:1px solid black;padding:5px;" > </canvas>
+</form>
+</body>
+<center>
+<div> If you notice California is pretty much the only 'blue' state south of the
+  snow line.
+  </div>
+
+  <div id="bluestates" style="background-image: url(Red_and_Blue_States2012.png);
+ width: 350; height: 220;" > </div>
+</center>  
+<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8' width='300' height='250' id='HSW_MapPlayer_66234'> <param name='movie' value='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf'> <param name='quality' value='high'> <param name='bgcolor' value='#FFFFFF'> <param name='allowFullScreen' value='false'> <param name='swLiveConnect' value='true'> <param name='FlashVars' value='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> <embed type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' width='300' height='250' bgcolor='#FFFFFF' name='HSW_MapPlayer_66234' src='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf' flashvars='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> </embed></object>
+</center>
+<script language= "javascript" type=text/javascript>
+function graph(){
+var c=document.getElementById("myCanvas");
+
+var section = parseInt(document.myform.sec1.value);
+var section2 = parseInt(document.myform.sec2.value);
+var section3 = parseInt(document.myform.sec3.value);
+
+var total = section + section2 + section3;
+
+var ctx=c.getContext("2d");
+ctx.beginPath();
+//context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
+ctx.arc(100,75,25,0,2*Math.PI*(section/total));
+ctx.lineWidth = 49;
+ctx.strokeStyle = "blue";
+ctx.stroke();
+
+//var cty = c.getContext("2d")
+ctx.beginPath();
+ctx.arc(100,75,25,2*Math.PI*section/total,2*Math.PI*(section+section2)/(total));
+ctx.lineWidth = 49;
+ctx.strokeStyle = "green";
+ctx.stroke();
+
+ctx.beginPath();
+ctx.arc(100,75,25,2*Math.PI*(section+section2)/(total),2*Math.PI*(section+section2+section3)/(total));
+ctx.lineWidth = 49;
+ctx.strokeStyle = "red";
+ctx.stroke();
+
+var c=document.getElementById("myCanvas2");
+var ctx=c.getContext("2d");
+ctx.beginPath();
+ctx.moveTo(0,0);
+ctx.lineTo(20,10);
+ctx.lineTo(30,30);
+ctx.lineTo(40,60);
+ctx.lineTo(50,90);
+ctx.lineTo(60,100);
+ctx.lineTo(70,90);
+ctx.lineTo(80,60);
+ctx.lineTo(90,30);
+ctx.lineWidth = 4;
+ctx.strokeStyle="#F000F0";
+ctx.stroke();
+
+var d=document.getElementById("totalScore");
+
+d.innerHTML = total;
+}
+</script>
+</html>
