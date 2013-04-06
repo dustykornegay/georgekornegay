@@ -19,29 +19,51 @@ PASSWORD: <input type="text" name="PeiWord"><input type="button"
 <body style= "background-color:lightyellow;padding:5px;">
 </br>
 <form name="myform">
-  Section 1: <input type="text" name="sec1"><br>
-  Section 2: <input type="text" name="sec2"><br>
-  Section 3:  <input type="text" name="sec3"><br>
+  Section 1: <input type="text" name="sec1">&nbsp &nbsp
+
+  Section 2: <input type="text" name="sec2"> &nbsp  &nbsp
+
+  Section 3:  <input type="text" name="sec3"> &nbsp  &nbsp
+
 <p> <input type="button" value="Graph" onclick="graph()" /> <p>
 <p> TotalScore: <i id="totalScore"> </i> </p>
   <canvas id="myCanvas" width="250" height="150"
    style="background-color:white;border:1px solid black;padding:5px;"
    > </canvas>
- <canvas id="myCanvas2" width="250" height="150" style=
+</br> </br> </br>
+How Many bits: <input type="text" name="bits"> &nbsp  &nbsp
+Cycles per bit: <input type="text" name="cycles"> &nbsp  &nbsp
+Samples per cycle:  <input type="text" name="samples">&nbsp  &nbsp
+</br>
+<p> <input type="button" value="Encode Random Bits" onclick="random_bits()" /> <p>
+</br>
+<canvas id="myCanvas_bits" width="250" height="150" style=
+   "background-color:white;border:1px solid black;padding:5px;" >
+</canvas>
+&nbsp
+<canvas id="myCanvas_encode" width="250" height="150" style=
+   "background-color:white;border:1px solid black;padding:5px;" >
+</canvas>
+&nbsp
+<canvas id="myCanvas_spectrum" width="250" height="150" style=
    "background-color:white;border:1px solid black;padding:5px;" > </canvas>
+
 </form>
 </body>
 <center>
 <div> If you notice California is pretty much the only 'blue' state south of the
   snow line.
   </div>
-
-  <div id="bluestates" style="background-image: url(Red_and_Blue_States2012.png);
- width: 350; height: 220;" > </div>
-</center>  
-<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8' width='300' height='250' id='HSW_MapPlayer_66234'> <param name='movie' value='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf'> <param name='quality' value='high'> <param name='bgcolor' value='#FFFFFF'> <param name='allowFullScreen' value='false'> <param name='swLiveConnect' value='true'> <param name='FlashVars' value='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> <embed type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' width='300' height='250' bgcolor='#FFFFFF' name='HSW_MapPlayer_66234' src='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf' flashvars='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> </embed></object>
 </center>
+<left>  <div id="bluestates" style="background-image: url(Red_and_Blue_States2012.png);
+ width: 350; height: 220;" > 
+&nbsp </div>
+</br>  
+<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8' width='300' height='250' id='HSW_MapPlayer_66234'> <param name='movie' value='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf'> <param name='quality' value='high'> <param name='bgcolor' value='#FFFFFF'> <param name='allowFullScreen' value='false'> <param name='swLiveConnect' value='true'> <param name='FlashVars' value='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> <embed type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' width='300' height='250' bgcolor='#FFFFFF' name='HSW_MapPlayer_66234' src='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf' flashvars='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> </embed></object>
+
 <script language= "javascript" type=text/javascript>
+var temp = new Array();
+
 function graph(){
 var c=document.getElementById("myCanvas");
 
@@ -54,43 +76,132 @@ var total = section + section2 + section3;
 var ctx=c.getContext("2d");
 ctx.beginPath();
 //context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
-ctx.arc(100,75,25,0,2*Math.PI*(section/total));
+ctx.arc(100,75,25,0,2*Math.PI*section/total);
 ctx.lineWidth = 49;
 ctx.strokeStyle = "blue";
 ctx.stroke();
 
 //var cty = c.getContext("2d")
 ctx.beginPath();
-ctx.arc(100,75,25,2*Math.PI*section/total,2*Math.PI*(section+section2)/(total));
+ctx.arc(100,75,25,2*Math.PI*section/total,2*Math.PI*(section+section2)/total);
 ctx.lineWidth = 49;
 ctx.strokeStyle = "green";
 ctx.stroke();
 
 ctx.beginPath();
-ctx.arc(100,75,25,2*Math.PI*(section+section2)/(total),2*Math.PI*(section+section2+section3)/(total));
+ctx.arc(100,75,25,2*Math.PI*(section+section2)/total,2*Math.PI*(section+section2+section3)/(total));
 ctx.lineWidth = 49;
 ctx.strokeStyle = "red";
-ctx.stroke();
-
-var c=document.getElementById("myCanvas2");
-var ctx=c.getContext("2d");
-ctx.beginPath();
-ctx.moveTo(0,0);
-ctx.lineTo(20,10);
-ctx.lineTo(30,30);
-ctx.lineTo(40,60);
-ctx.lineTo(50,90);
-ctx.lineTo(60,100);
-ctx.lineTo(70,90);
-ctx.lineTo(80,60);
-ctx.lineTo(90,30);
-ctx.lineWidth = 4;
-ctx.strokeStyle="#F000F0";
 ctx.stroke();
 
 var d=document.getElementById("totalScore");
 
 d.innerHTML = total;
 }
+
+
+
+
+
+function random_bits(){
+
+//graph bits
+var width = 250;
+var height = 150;
+var fill = 80/100;
+
+
+var border = (1 -fill)/ 2;
+var d=document.getElementById("myCanvas_bits");
+var cty=d.getContext("2d");
+cty.beginPath();
+cty.moveTo(0,height*border);
+var len = parseInt(document.myform.bits.value);
+var cpb = parseInt(document.myform.cycles.value);
+for ( var i = 0; i < (cpb * len); i ++) {
+temp[i] = Math.random();
+if (temp[i] > 0.5) {
+temp[i] =1;}
+else {
+temp[i] = 0;
+}
+cty.lineTo((i-1)* width/len,(border +fill* (1- temp[i]))*height );
+cty.lineTo(i* width/len,(border +fill* (1- temp[i]))*height );
+}
+cty.lineWidth = 2;
+cty.strokeStyle="#F000F0";
+cty.stroke();
+
+
+
+//'''
+//graph encoding
+var width = 250;
+var height = 150;
+var fill = 80/100;
+var border = (1 -fill)/ 2;
+var scale = height * fill;
+var offset = height * border;
+
+var d=document.getElementById("myCanvas_encode");
+var cty=d.getContext("2d");
+cty.beginPath();
+cty.moveTo(0,height*border);
+var len = parseInt(document.myform.bits.value);
+var cpb = parseInt(document.myform.cycles.value);
+var spc = parseInt(document.myform.samples.value);
+
+samples = cpb*len;
+
+for ( var i = 0; i < len; i ++) {
+cycles = i * cpb *width;
+amplitude = temp[i] * scale;
+
+for (var j =0; j < spc; j++){
+var y_verticalpos = height - (amplitude + offset) ;
+var x_horizontalpos = ((cycles/samples)+j);
+var x_nexthorizontalpos = ((cycles/samples)+j+1);
+
+//console.log(x_horizontalpos, y_verticalpos);
+
+//Draw a line from current horizontal position to next horizontal position 
+cty.lineTo(x_horizontalpos, y_verticalpos);
+cty.lineTo(x_nexthorizontalpos, y_verticalpos);
+}
+
+}
+cty.lineWidth = 2;
+cty.strokeStyle="#F000F0";
+cty.stroke();
+
+//graph spectrum
+var e=document.getElementById("myCanvas_spectrum");
+var ctz=e.getContext("2d");
+ctz.beginPath();
+ctz.moveTo(0,height*border);
+
+var temp2 = new Array();
+for ( var i =0; i < (cpb * len); i++){
+
+for (var k = 0; k < spc; k++){
+var l = k*2* Math.PI/spc;
+temp2[k] = temp[i] * Math.sin(l)/2;
+
+x_horizontalpos =((i*spc)+k)*cpb;
+y_verticalpos = (temp2[k] + 0.5) * height;
+
+console.log(x_horizontalpos, y_verticalpos);
+ctz.lineTo(x_horizontalpos, y_verticalpos);
+
+}
+
+}
+ctz.lineWidth = 2;
+ctz.strokeStyle="#F000F0";
+ctz.stroke();
+
+
+}
+
 </script>
 </html>
