@@ -35,7 +35,7 @@ How Many bits: <input type="text" name="bits"> &nbsp  &nbsp
 Cycles per bit: <input type="text" name="cycles"> &nbsp  &nbsp
 Samples per cycle:  <input type="text" name="samples">&nbsp  &nbsp
 </br>
-<p> <input type="button" value="Encode Random Bits" onclick="random_bits()" /> <p>
+<p> <input type="button" value="Encode Random Bits PCM/PCM/OOK" onclick="random_bits()" /> <p>
 </br>
 <canvas id="myCanvas_bits" width="250" height="150" style=
    "background-color:white;border:1px solid black;padding:5px;" >
@@ -125,8 +125,8 @@ temp[i] =1;}
 else {
 temp[i] = 0;
 }
-cty.lineTo((i-1)* width/len,(border +fill* (1- temp[i]))*height );
 cty.lineTo(i* width/len,(border +fill* (1- temp[i]))*height );
+cty.lineTo((i+1)* width/len,(border +fill* (1- temp[i]))*height );
 }
 cty.lineWidth = 2;
 cty.strokeStyle="#F000F0";
@@ -153,16 +153,21 @@ var spc = parseInt(document.myform.samples.value);
 
 samples = cpb*len;
 
-for ( var i = 0; i < len; i ++) {
-cycles = i * cpb *width;
+//total unit_width = cpb*len*spc/width
+//present position = (i*spc*cpb)+j
+
+//i =0,1,2 = i*(width / len) =  240/3 = 80(0,1,2)= 0,80,160
+for ( var i = 0; i <= len; i ++) {
+cycles = i * width/len;
 amplitude = temp[i] * scale;
 
+//j = 0,1 = j*(80 / 2) + i =  0, 40; 80, 120; 160,200;
 for (var j =0; j < spc; j++){
 var y_verticalpos = height - (amplitude + offset) ;
-var x_horizontalpos = ((cycles/samples)+j);
-var x_nexthorizontalpos = ((cycles/samples)+j+1);
+var x_horizontalpos = (cycles+j*(width/(len*spc)));
+var x_nexthorizontalpos = (cycles+(j+1)*(width/(len*spc)));
 
-//console.log(x_horizontalpos, y_verticalpos);
+//console.log(x_horizontalpos);
 
 //Draw a line from current horizontal position to next horizontal position 
 cty.lineTo(x_horizontalpos, y_verticalpos);
@@ -175,7 +180,7 @@ cty.strokeStyle="#F000F0";
 cty.stroke();
 
 //graph spectrum
-var e=document.getElementById("myCanvas_spectrum");
+var e=document.getElementById("myCanvas_encode");
 var ctz=e.getContext("2d");
 ctz.beginPath();
 ctz.moveTo(0,height*border);
@@ -185,19 +190,20 @@ for ( var i =0; i < (cpb * len); i++){
 
 for (var k = 0; k < spc; k++){
 var l = k*2* Math.PI/spc;
-temp2[k] = temp[i] * Math.sin(l)/2;
+temp2[k] = temp[Math.floor(i/cpb)] * Math.sin(l)/2;
 
-x_horizontalpos =((i*spc)+k)*cpb;
-y_verticalpos = (temp2[k] + 0.5) * height;
+//x_horizontalpos =((i*spc)+k)*cpb;
+x_horizontalpos = (width/(cpb*len))*i + (width/(spc*cpb*len))*k;
+y_verticalpos =border*height+ (temp2[k] + 0.5) * (height*fill) ;
 
-console.log(x_horizontalpos, y_verticalpos);
+//console.log(i, x_horizontalpos, temp[i]);
 ctz.lineTo(x_horizontalpos, y_verticalpos);
 
 }
 
 }
 ctz.lineWidth = 2;
-ctz.strokeStyle="#F000F0";
+ctz.strokeStyle="#00F000";
 ctz.stroke();
 
 
