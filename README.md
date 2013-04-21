@@ -1,4 +1,0 @@
-georgekornegay
-==============
-
-Communications Engineering Tools
