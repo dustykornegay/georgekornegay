@@ -19,23 +19,11 @@ PASSWORD: <input type="text" name="PeiWord"><input type="button"
 <body style= "background-color:lightyellow;padding:5px;">
 </br>
 <form name="myform">
-  Section 1: <input type="text" name="sec1">&nbsp &nbsp
-
-  Section 2: <input type="text" name="sec2"> &nbsp  &nbsp
-
-  Section 3:  <input type="text" name="sec3"> &nbsp  &nbsp
-
-<p> <input type="button" value="Graph" onclick="graph()" /> <p>
-<p> TotalScore: <i id="totalScore"> </i> </p>
-  <canvas id="myCanvas" width="250" height="150"
-   style="background-color:white;border:1px solid black;padding:5px;"
-   > </canvas>
-</br> </br> </br>
 How Many bits: <input type="text" name="bits"> &nbsp  &nbsp
 Cycles per bit: <input type="text" name="cycles"> &nbsp  &nbsp
 Samples per cycle:  <input type="text" name="samples">&nbsp  &nbsp
 </br>
-<p> <input type="button" value="Encode Random Bits PCM/PCM/OOK" onclick="random_bits()" /> <p>
+<p> <input type="button" value="Encode Random Bits PCM/OOK/Spectrum" onclick="random_bits()" /> <p>
 </br>
 <canvas id="myCanvas_bits" width="250" height="150" style=
    "background-color:white;border:1px solid black;padding:5px;" >
@@ -46,20 +34,26 @@ Samples per cycle:  <input type="text" name="samples">&nbsp  &nbsp
 </canvas>
 &nbsp
 <canvas id="myCanvas_spectrum" width="250" height="150" style=
-   "background-color:white;border:1px solid black;padding:5px;" > </canvas>
+   "background-color:white;border:1px solid black;padding:5px;" >
+   </canvas>
+</br> </br> </br>
+
+ Section 1: <input type="text" name="sec1">&nbsp &nbsp
+
+  Section 2: <input type="text" name="sec2"> &nbsp  &nbsp
+
+  Section 3:  <input type="text" name="sec3"> &nbsp  &nbsp
+
+<p> <input type="button" value="Graph" onclick="graph()" /> <p>
+<p> TotalScore: <i id="totalScore"> </i> </p>
+  <canvas id="myCanvas" width="450" height="150"
+   style="background-color:white;border:1px solid black;padding:5px;"
+   > </canvas>
+
+
 
 </form>
 </body>
-<center>
-<div> If you notice California is pretty much the only 'blue' state south of the
-  snow line.
-  </div>
-</center>
-<left>  <div id="bluestates" style="background-image: url(Red_and_Blue_States2012.png);
- width: 350; height: 220;" > 
-&nbsp </div>
-</br>  
-<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8' width='300' height='250' id='HSW_MapPlayer_66234'> <param name='movie' value='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf'> <param name='quality' value='high'> <param name='bgcolor' value='#FFFFFF'> <param name='allowFullScreen' value='false'> <param name='swLiveConnect' value='true'> <param name='FlashVars' value='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> <embed type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' width='300' height='250' bgcolor='#FFFFFF' name='HSW_MapPlayer_66234' src='http://static.ddmcdn.com/flash/SnagItPlayer_300x250.swf' flashvars='mapFile=http://static.ddmcdn.com/gif/maps/swf/NAM_US_THEM_AnnualSnow.swf&jpgFile=http://static.ddmcdn.com/gif/maps/jpg/NAM_US_THEM_AnnualSnow.jpg&pdfFile=http://static.ddmcdn.com/gif/maps/pdf/NAM_US_THEM_AnnualSnow.pdf&mapW=545&mapH=290&emailURL=http://maps.howstuffworks.com/united-states-annual-snowfall-map.htm/email&'> </embed></object>
 
 <script language= "javascript" type=text/javascript>
 var temp = new Array();
@@ -146,7 +140,7 @@ var offset = height * border;
 var d=document.getElementById("myCanvas_encode");
 var cty=d.getContext("2d");
 cty.beginPath();
-cty.moveTo(0,height*border);
+cty.moveTo(0,height/2);
 var len = parseInt(document.myform.bits.value);
 var cpb = parseInt(document.myform.cycles.value);
 var spc = parseInt(document.myform.samples.value);
@@ -179,24 +173,26 @@ cty.lineWidth = 2;
 cty.strokeStyle="#F000F0";
 cty.stroke();
 
-//graph spectrum
+//graph encode
 var e=document.getElementById("myCanvas_encode");
 var ctz=e.getContext("2d");
 ctz.beginPath();
-ctz.moveTo(0,height*border);
+ctz.moveTo(0,height -height*border);
 
 var temp2 = new Array();
 for ( var i =0; i < (cpb * len); i++){
 
-for (var k = 0; k < spc; k++){
+for (var k = 0; k <= spc; k++){
 var l = k*2* Math.PI/spc;
-temp2[k] = temp[Math.floor(i/cpb)] * Math.sin(l)/2;
+
+// this is where you change the modulation scheme
+temp2[i*spc+k] = temp[Math.floor(i/cpb)] * Math.sin(l)/2;
 
 //x_horizontalpos =((i*spc)+k)*cpb;
 x_horizontalpos = (width/(cpb*len))*i + (width/(spc*cpb*len))*k;
-y_verticalpos =border*height+ (temp2[k] + 0.5) * (height*fill) ;
+y_verticalpos = border*height+ (temp2[i*spc+k] + 0.5) * (height*fill) ;
 
-//console.log(i, x_horizontalpos, temp[i]);
+//console.log(temp2[i*spc+k]);
 ctz.lineTo(x_horizontalpos, y_verticalpos);
 
 }
@@ -205,6 +201,52 @@ ctz.lineTo(x_horizontalpos, y_verticalpos);
 ctz.lineWidth = 2;
 ctz.strokeStyle="#00F000";
 ctz.stroke();
+
+console.log(temp2.length);
+
+
+//graph spectrum
+//calculate dft
+var real = new Array();
+var imaginary = new Array();
+var temp3 =new Array();
+var arc_length = Math.PI*2/temp2.length;
+//console.log(arc_length);
+for (k=0; k < temp2.length ;k ++){
+//calculate e^j-2-pi-k/length
+phase_exponent = k* arc_length;
+//console.log(Math.cos(phase_exponent));
+real[k]=0;
+imaginary[k] =0;
+for (i=1; i < temp2.length;i++){
+real[k] += Math.cos(phase_exponent*i)*temp2[i];
+imaginary[k] += Math.sin(phase_exponent*i)*temp2[i];
+
+}
+temp3[k] = Math.sqrt (real[k] * real[k]+ imaginary[k] * imaginary[k])/temp2.length;
+
+//console.log(temp3[k]);
+// divide by temp.length to normalize.
+//end k
+}
+
+// graph spectrum = temp3[k]/temp.length;
+var f=document.getElementById("myCanvas_spectrum");
+var ctz=f.getContext("2d");
+ctz.beginPath();
+ctz.moveTo(0,height - height*border);
+
+for (i=0; i <= temp3.length+1; i++){
+x_horizontalpos = i *width/temp3.length;
+y_verticalpos = height - (height*border + (temp3[i]*4) * (height*fill));
+ctz.lineTo(x_horizontalpos, y_verticalpos);
+//console.log (x_horizontalpos,y_verticalpos);
+}
+ctz.lineTo(width,  height - (height*border + (temp3[0]*4) * (height*fill)));
+ctz.lineWidth = 2;
+ctz.strokeStyle="#00F000";
+ctz.stroke();
+
 
 
 }
