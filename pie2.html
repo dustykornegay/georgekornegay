@@ -98,21 +98,18 @@ cty.beginPath();
 cty.moveTo(0,height*border);
 var len = parseInt(document.myform.bits.value);
 var cpb = parseInt(document.myform.cycles.value);
-for ( var i = 0; i < (cpb * len); i ++) {
-temp[i] = Math.random();
-if (temp[i] > 0.5) {
-temp[i] =1;}
-else {
-temp[i] = 0;
-}
+
+var index = cpb * len;
+rnd_array(index);
+
+for (i=0; i < index; i++){
 cty.lineTo(i* width/len,(border +fill* (1- temp[i]))*height );
 cty.lineTo((i+1)* width/len,(border +fill* (1- temp[i]))*height );
 }
+
 cty.lineWidth = 2;
 cty.strokeStyle="#F000F0";
 cty.stroke();
-
-
 
 //'''
 //graph encoding
@@ -184,6 +181,7 @@ ctz.lineTo(x_horizontalpos, y_verticalpos);
 }
 
 }
+
 ctz.lineWidth = 2;
 ctz.strokeStyle="#00F000";
 ctz.stroke();
@@ -193,28 +191,7 @@ ctz.stroke();
 
 //graph spectrum
 //calculate dft
-var real = new Array();
-var imaginary = new Array();
-
-var arc_length = Math.PI*2/temp2.length;
-
-for (k=0; k < temp2.length ;k ++){
-//calculate e^j-2-pi-k/length
-phase_exponent = k* arc_length;
-//console.log(Math.cos(phase_exponent));
-real[k]=0;
-imaginary[k] =0;
-for (i=1; i < temp2.length;i++){
-real[k] += Math.cos(phase_exponent*i)*temp2[i];
-imaginary[k] += Math.sin(phase_exponent*i)*temp2[i];
-
-}
-temp3[k] = Math.sqrt (real[k] * real[k]+ imaginary[k] * imaginary[k])/temp2.length;
-
-//console.log(temp3[k]);
-// divide by temp.length to normalize.
-//end k
-}
+dft();
 
 // graph spectrum = temp3[k]/temp.length;
 var f=document.getElementById("myCanvas_spectrum");
@@ -313,7 +290,6 @@ for (var k = 0; k <= spc; k++){
 // this is where you change the modulation scheme
 var l = k*2* Math.PI/spc;
 var l2 = 2*l;
-
 if (temp[Math.floor(i/cpb)] == 1){
 temp2[i*spc+k] = Math.sin(l)/2;
 }
@@ -321,17 +297,15 @@ else{
 temp2[i*spc+k] =  Math.sin(l2)/2;
 }
 
-
-//x_horizontalpos =((i*spc)+k)*cpb;
 x_horizontalpos = (width/(cpb*len))*i + (width/(spc*cpb*len))*k;
-y_verticalpos = border*height+ (temp2[i*spc+k] + 0.5) * (height*fill) ;
+y_verticalpos = border*height+ (temp2[i*spc+k] + 0.5) * (height*fill);
 
-//console.log(temp2[i*spc+k]);
 ctz.lineTo(x_horizontalpos, y_verticalpos);
-
 }
 
 }
+
+
 ctz.lineWidth = 2;
 ctz.strokeStyle="#00F000";
 ctz.stroke();
@@ -388,6 +362,8 @@ temp3[k] = Math.sqrt (real[k] * real[k]+ imaginary[k] * imaginary[k])/temp2.leng
 
 }
 
+
+
 function graph(){
 var c=document.getElementById("myCanvas");
 
@@ -423,5 +399,15 @@ var d=document.getElementById("totalScore");
 d.innerHTML = total;
 }
 
+function rnd_array(length){
+for ( var i = 0; i < (length); i ++) {
+temp[i] = Math.random();
+if (temp[i] > 0.5) {
+temp[i] =1;}
+else {
+temp[i] = 0;
+}
+}
+}
 </script>
 </html>
