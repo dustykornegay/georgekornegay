@@ -18,7 +18,6 @@ PASSWORD: <input type="text" name="PeiWord"><input type="button"
 </head>
 <body style= "background-color:lightyellow;padding:5px;">
 </br>
-
 <form name="myform">
 How Many bits: <input type="text" name="bits"> &nbsp  &nbsp
 Cycles per bit: <input type="text" name="cycles"> &nbsp  &nbsp
@@ -26,7 +25,7 @@ Samples per cycle:  <input type="text" name="samples">&nbsp  &nbsp
 </br>
 <p> <input type="button" value="Encode Random Bits PCM/Modulation/Spectrum" onclick="random_bits()" /> <p>
 </br>
- On-Off Keying (OOK) </br>
+ On Off Keying (OOK) </br>
 <canvas id="myCanvas_bits" width="250" height="150" style=
    "background-color:white;border:1px solid black;padding:5px;" >
 </canvas>
@@ -40,8 +39,7 @@ Samples per cycle:  <input type="text" name="samples">&nbsp  &nbsp
    </canvas>
 </br> </br>
 
-Frequency Shift Keying (FSK) </br>>
-
+Frequency Shift Keying (FSK) </br>
 <canvas id="myCanvas_bits_fsk" width="250" height="150" style=
    "background-color:white;border:1px solid black;padding:5px;" >
 </canvas>
@@ -57,8 +55,6 @@ Frequency Shift Keying (FSK) </br>>
 </form>
 
 </br></br></br>
-
-
 <form name ="form2">
  Section 1: <input type="text" name="sec1">&nbsp &nbsp
 
@@ -71,10 +67,11 @@ Frequency Shift Keying (FSK) </br>>
 
 <canvas id="myCanvas" width="450" height="150"
    style="background-color:white;border:1px solid black;padding:5px;"
-   >
-</canvas>
-</form>
+   > </canvas>
 
+
+
+</form>
 </body>
 
 <script language= "javascript" type=text/javascript>
@@ -82,42 +79,34 @@ var temp = new Array();
 var temp2 = new Array();
 var temp3 = new Array();
 
-var width = 250;
-var height = 150;
-var fill = 80/100;
-var border = (1 -fill)/ 2;
-var scale = height * fill;
-var offset = height * border;
 
-var len = parseInt(document.myform.bits.value);
-var cpb = parseInt(document.myform.cycles.value);
-var index = cpb *len;
 
 function random_bits(){
-//graph bits
 var width = 250;
 var height = 150;
 var fill = 80/100;
 var border = (1 -fill)/ 2;
 
+//graph bits
 var d=document.getElementById("myCanvas_bits");
 d.width = d.width; //Clears canvas fast... 
 var cty=d.getContext("2d");
 cty.beginPath();
 cty.moveTo(0,height*border);
+var len = parseInt(document.myform.bits.value);
+var cpb = parseInt(document.myform.cycles.value);
 
+var index = cpb * len;
+rnd_array(index);
 
-gen_random(index);
-
-for (i =0; i < index; i++) {
+for (i=0; i < index; i++){
 cty.lineTo(i* width/len,(border +fill* (1- temp[i]))*height );
 cty.lineTo((i+1)* width/len,(border +fill* (1- temp[i]))*height );
 }
+
 cty.lineWidth = 2;
 cty.strokeStyle="#F000F0";
 cty.stroke();
-
-
 
 //'''
 //graph encoding
@@ -143,7 +132,6 @@ samples = cpb*len;
 //present position = (i*spc*cpb)+j
 
 //i =0,1,2 = i*(width / len) =  240/3 = 80(0,1,2)= 0,80,160
-
 for ( var i = 0; i <= len; i ++) {
 cycles = i * width/len;
 amplitude = temp[i] * scale;
@@ -178,7 +166,7 @@ for (var k = 0; k <= spc; k++){
 var l = k*2* Math.PI/spc;
 
 // this is where you change the modulation scheme
-modulation(0);
+temp2[i*spc+k] = temp[Math.floor(i/cpb)] * Math.sin(l)/2;
 
 //x_horizontalpos =((i*spc)+k)*cpb;
 x_horizontalpos = (width/(cpb*len))*i + (width/(spc*cpb*len))*k;
@@ -190,6 +178,7 @@ ctz.lineTo(x_horizontalpos, y_verticalpos);
 }
 
 }
+
 ctz.lineWidth = 2;
 ctz.strokeStyle="#00F000";
 ctz.stroke();
@@ -199,10 +188,12 @@ ctz.stroke();
 
 //graph spectrum
 //calculate dft
-dft(); // calc dft on temp2 store in temp3
+dft();
 
 // graph spectrum = temp3[k]/temp.length;
-graph_spectrum("myCanvas_spectrum");
+graph_spectrum ("myCanvas_spectrum");
+
+
 
 
 //------------------------------ FSK Graphs Using temp[i] randoms
@@ -223,7 +214,6 @@ for ( var i = 0; i < (cpb * len); i ++) {
 cty.lineTo(i* width/len,(border +fill* (1- temp[i]))*height );
 cty.lineTo((i+1)* width/len,(border +fill* (1- temp[i]))*height );
 }
-
 cty.lineWidth = 2;
 cty.strokeStyle="#F000F0";
 cty.stroke();
@@ -273,6 +263,7 @@ var ctz=e.getContext("2d");
 ctz.beginPath();
 ctz.moveTo(0,height -height*border);
 
+
 for ( var i =0; i < (cpb * len); i++){
 
 for (var k = 0; k <= spc; k++){
@@ -293,21 +284,33 @@ ctz.lineTo(x_horizontalpos, y_verticalpos);
 }
 
 }
+
+
 ctz.lineWidth = 2;
 ctz.strokeStyle="#00F000";
 ctz.stroke();
 
-console.log(temp2.length);
+//console.log(temp2.length);
+
 
 //graph spectrum
+//calculate dft
 dft();
-graph_spectrum("myCanvas_spectrum_fsk");
+
+// graph spectrum = temp3[k]/temp.length;
+graph_spectrum ("myCanvas_spectrum_fsk");
 
 }
 
-
-
 function graph_spectrum(canvas_name){
+var width = 250;
+var height = 150;
+var fill = 80/100;
+var border = (1 -fill)/ 2;
+var scale = height * fill;
+var offset = height * border;
+
+var scale =4;
 var f=document.getElementById(canvas_name);
 f.width = f.width;
 var ctz=f.getContext("2d");
@@ -316,11 +319,10 @@ ctz.moveTo(0,height - height*border);
 
 for (i=0; i <= temp3.length+1; i++){
 x_horizontalpos = i *width/temp3.length;
-y_verticalpos = height - (height*border + (temp3[i]*4) * (height*fill));
+y_verticalpos = height - (height*border + (temp3[i]*scale) * (height*fill));
 ctz.lineTo(x_horizontalpos, y_verticalpos);
-//console.log (x_horizontalpos,y_verticalpos);
 }
-ctz.lineTo(width,  height - (height*border + (temp3[0]*4) * (height*fill)));
+ctz.lineTo(width,  height - (height*border + (temp3[0]*scale) * (height*fill)));
 ctz.lineWidth = 2;
 ctz.strokeStyle="#00F000";
 ctz.stroke();
@@ -330,7 +332,7 @@ function dft(){
 //calculate dft from temp2[ ] and store in temp3[ ]
 var real = new Array();
 var imaginary = new Array();
-var temp3 =new Array();
+
 var arc_length = Math.PI*2/temp2.length;
 //console.log(arc_length);
 for (k=0; k < temp2.length ;k ++){
@@ -349,33 +351,6 @@ temp3[k] = Math.sqrt (real[k] * real[k]+ imaginary[k] * imaginary[k])/temp2.leng
 
 }
 
-
-function gen_random(index){
-for ( var i = 0; i < index; i ++) {
-temp[i] = Math.random();
-if (temp[i] > 0.5) {
-temp[i] =1;}
-else {
-temp[i] = 0;
-}
-}
-}
-
-function modulation(code){
-switch (code){
-
-case 1://FSK
-
-break;
-
-default: //OOK
-for (i = 0; i > cpb * length; i ++) {
-temp2[i*spc+k] = temp[Math.floor(i/cpb)] * Math.sin(l)/2;
-}
-break;
-}
-
-}
 
 
 function graph(){
@@ -411,6 +386,17 @@ ctx.stroke();
 var d=document.getElementById("totalScore");
 
 d.innerHTML = total;
+}
+
+function rnd_array(length){
+for ( var i = 0; i < (length); i ++) {
+temp[i] = Math.random();
+if (temp[i] > 0.5) {
+temp[i] =1;}
+else {
+temp[i] = 0;
+}
+}
 }
 </script>
 </html>
